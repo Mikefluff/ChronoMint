@@ -77,6 +77,7 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
 
   const ethereumSigner = getEthereumSigner(state)
   const ethAddress = await ethereumSigner.getAddress(accountPath)
+  console.log(ethAddress)
 
   wallets.push(new WalletModel({
     address: ethAddress.toLowerCase(accountPath),
@@ -85,10 +86,12 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
     walletDerivedPath: accountPath,
   }))
 
-  const bitcoinSigner = getBitcoinSigner(state)
+/*  const bitcoinSigner = getBitcoinSigner(state)
+
   if (bitcoinSigner) {
+  const bitcoinAddress = await bitcoinSigner.getAddress(accountPath)
     wallets.push(new WalletModel({
-      address: bitcoinSigner.getAddress(accountPath),
+      address: bitcoinAddress,
       blockchain: BLOCKCHAIN_BITCOIN,
       isMain: true,
       walletDerivedPath: accountPath,
@@ -96,9 +99,11 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
   }
 
   const bitcoinCashSigner = getBitcoinCashSigner(state)
+
   if (bitcoinCashSigner) {
+  const bitcoinCashAddress = await bitcoinCashSigner.getAddress(accountPath)
     wallets.push(new WalletModel({
-      address: bitcoinCashSigner.getAddress(accountPath),
+      address: bitcoinCashAddress,
       blockchain: BLOCKCHAIN_BITCOIN_CASH,
       isMain: true,
       walletDerivedPath: accountPath,
@@ -106,9 +111,11 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
   }
 
   const dashSigner = getDashSigner(state)
+
   if (dashSigner) {
+  const dashAddress = await dashSigner.getAddress(accountPath)
     wallets.push(new WalletModel({
-      address: dashSigner.getAddress(accountPath),
+      address: dashAddress,
       blockchain: BLOCKCHAIN_DASH,
       isMain: true,
       walletDerivedPath: accountPath,
@@ -116,9 +123,11 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
   }
 
   const litecoinSigner = getLitecoinSigner(state)
+
   if (litecoinSigner) {
+  const litecoinAddress = await litecoinSigner.getAddress(accountPath)
     wallets.push(new WalletModel({
-      address: litecoinSigner.getAddress(accountPath),
+      address: litecoinAddress,
       blockchain: BLOCKCHAIN_LITECOIN,
       isMain: true,
       walletDerivedPath: accountPath,
@@ -126,19 +135,23 @@ const initWalletsFromKeys = () => async (dispatch, getState) => {
   }
 
   const nemSigner = getNemSigner(state)
-  if (nemSigner) {
+
+  if(nemSigner) {
+  const nemAddress = await nemSigner.getAddress(accountPath)
     wallets.push(new WalletModel({
-      address: nemSigner.getAddress(accountPath),
+      address: nemAddress,
       blockchain: BLOCKCHAIN_NEM,
       isMain: true,
       walletDerivedPath: accountPath,
     }))
-  }
+  }*/
 
   const wavesSigner = getWavesSigner(state)
+
   if (wavesSigner) {
+  const wavesAddress = await wavesSigner.getAddress(accountPath)
     wallets.push(new WalletModel({
-      address: wavesSigner.getAddress(accountPath),
+      address: wavesAddress,
       blockchain: BLOCKCHAIN_WAVES,
       isMain: true,
       walletDerivedPath: accountPath,

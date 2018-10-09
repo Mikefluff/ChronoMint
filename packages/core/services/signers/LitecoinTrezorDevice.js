@@ -18,8 +18,8 @@ export default class BitcoinTrezorDevice extends EventEmitter {
   // this method is a part of base interface
   async getAddress (path) {
     const result = await TrezorConnect.getAddress({
-                           path: "m/44'/0'/0'/0/0",
-                           coin: "Bitcoin"
+                           path: "m/44'/2'/0'/0/0",
+                           coin: "Litecoin"
                          })
     console.log(result)
     return result.payload.address
@@ -72,7 +72,7 @@ export default class BitcoinTrezorDevice extends EventEmitter {
     const result = await TrezorConnect.signTransaction({
       inputs: inputs,
       outputs: outputs,
-      coin: 'Testnet', // @todo Need to do mainnet support?
+      coin: 'Litecoin', // @todo Need to do mainnet support?
     })
 
     return result

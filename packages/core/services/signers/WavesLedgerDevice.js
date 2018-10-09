@@ -3,13 +3,24 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import WavesMemoryDevice from './WavesMemoryDevice'
+import EventEmitter from 'events'
+import TransportU2F from '@ledgerhq/hw-transport-u2f'
+import AppWaves from './wavesledger'
 
-export const MOCK_PRIVATE_SEED = 'cfc237b5d387c438cfdf647f686807ade5d6284cc7302d1ba5e4dd7e16b4e91b'
-
-export default class WavesLedgerDeviceMock extends WavesMemoryDevice {
+export default class WavesLedgerDevice extends EventEmitter {
   constructor ({ network }) {
-    super({ network, seedPhrase: MOCK_PRIVATE_SEED })
+    super()
+    this.network = network
+  }
+
+  // this method is a part of base interface
+  async getAddress (path) {
+    console.log('we are here')
+    const transport = await TransportU2F.create()
+    const app = new AppWaves(transport)
+    const result = await app.getWalletPublicKey(path)
+    console.log(result)
+    return result.bitcoinAddress
   }
 
 }

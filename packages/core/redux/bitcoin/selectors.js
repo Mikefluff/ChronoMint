@@ -13,7 +13,6 @@ import {
   WALLET_TYPE_LEDGER,
   WALLET_TYPE_LEDGER_MOCK,
   WALLET_TYPE_MEMORY,
-  WALLET_TYPE_METAMASK,
 } from '../../models/constants/AccountEntryModel'
 import {
   BLOCKCHAIN_BITCOIN,
@@ -24,10 +23,15 @@ import MetamaskPlugin from '../../services/signers/MetamaskPlugin'
 import BitcoinMemoryDevice from '../../services/signers/BitcoinMemoryDevice'
 import BitcoinLedgerDeviceMock from '../../services/signers/BitcoinLedgerDeviceMock'
 import BitcoinTrezorDeviceMock from '../../services/signers/BitcoinTrezorDeviceMock'
-
+import BitcoinLedgerDevice from '../../services/signers/BitcoinLedgerDevice'
+import BitcoinTrezorDevice from '../../services/signers/BitcoinTrezorDevice'
 import BitcoinCashMemoryDevice from '../../services/signers/BitcoinCashMemoryDevice'
+import BitcoinCashLedgerDevice from '../../services/signers/BitcoinCashLedgerDevice'
+import BitcoinCashTrezorDevice from '../../services/signers/BitcoinCashTrezorDevice'
 import BitcoinCashLedgerDeviceMock from '../../services/signers/BitcoinCashLedgerDeviceMock'
 import BitcoinCashTrezorDeviceMock from '../../services/signers/BitcoinCashTrezorDeviceMock'
+import LitecoinTrezorDevice from '../../services/signers/LitecoinTrezorDevice'
+import LitecoinLedgerDevice from '../../services/signers/LitecoinLedgerDevice'
 
 export const bitcoinSelector = () => (state) =>
   state.get(DUCK_BITCOIN)
@@ -57,16 +61,17 @@ export const getBitcoinSigner = (state) => {
       const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
       return new BitcoinMemoryDevice({ privateKey, network })
     }
-    case WALLET_TYPE_LEDGER_MOCK:
-    case WALLET_TYPE_LEDGER: {
+    case WALLET_TYPE_LEDGER_MOCK: {
       return new BitcoinLedgerDeviceMock({ network })
     }
-    case WALLET_TYPE_TREZOR_MOCK:
-    case WALLET_TYPE_TREZOR: {
+    case WALLET_TYPE_LEDGER: {
+      return new BitcoinLedgerDevice({ network })
+    }
+    case WALLET_TYPE_TREZOR_MOCK: {
       return new BitcoinTrezorDeviceMock({ network })
     }
-    case WALLET_TYPE_METAMASK: {
-      return new MetamaskPlugin()
+    case WALLET_TYPE_TREZOR: {
+      return new BitcoinTrezorDevice({ network })
     }
   }
 }
@@ -81,16 +86,17 @@ export const getBitcoinCashSigner = (state) => {
       const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
       return new BitcoinCashMemoryDevice({ privateKey, network })
     }
-    case WALLET_TYPE_LEDGER_MOCK:
-    case WALLET_TYPE_LEDGER: {
+    case WALLET_TYPE_LEDGER_MOCK: {
       return new BitcoinCashLedgerDeviceMock({ network })
     }
-    case WALLET_TYPE_TREZOR_MOCK:
-    case WALLET_TYPE_TREZOR: {
+    case WALLET_TYPE_LEDGER: {
+      return new BitcoinCashLedgerDevice({ network })
+    }
+    case WALLET_TYPE_TREZOR_MOCK: {
       return new BitcoinCashTrezorDeviceMock({ network })
     }
-    case WALLET_TYPE_METAMASK: {
-      return new MetamaskPlugin()
+    case WALLET_TYPE_TREZOR: {
+      return new BitcoinCashTrezorDevice({ network })
     }
   }
 }
@@ -105,16 +111,17 @@ export const getLitecoinSigner = (state) => {
       const privateKey = account.decryptedWallet.privateKey.slice(2, 66)
       return new BitcoinMemoryDevice({ privateKey, network })
     }
-    case WALLET_TYPE_LEDGER_MOCK:
+    case WALLET_TYPE_LEDGER_MOCK: {
+      return new LitecoinLedgerDeviceMock({ network })
+    }
     case WALLET_TYPE_LEDGER: {
-      return new BitcoinLedgerDeviceMock({ network })
+      return new LitecoinLedgerDevice({ network })
     }
-    case WALLET_TYPE_TREZOR_MOCK:
+    case WALLET_TYPE_TREZOR_MOCK: {
+      return new LitecoinTrezorDeviceMock({ network })
+    }
     case WALLET_TYPE_TREZOR: {
-      return new BitcoinLedgerDeviceMock({ network })
-    }
-    case WALLET_TYPE_METAMASK: {
-      return new MetamaskPlugin()
+      return new LitecoinTrezorDevice({ network })
     }
   }
 }

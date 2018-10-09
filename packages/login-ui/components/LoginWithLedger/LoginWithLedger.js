@@ -70,7 +70,7 @@ class LoginWithLedger extends PureComponent {
         }
 
         {
-          deviceList.length && (
+          !!deviceList.length && (
             <div styleName='account'>
               {deviceList.map(this._buildItem)}
             </div>
@@ -82,7 +82,6 @@ class LoginWithLedger extends PureComponent {
             <Translate value='LoginWithLedger.enterPath' />
           </button>
           <br />
-
           <Translate value='LoginWithLedger.or' />
           <br />
           <button onClick={previousPage} styleName='link'>

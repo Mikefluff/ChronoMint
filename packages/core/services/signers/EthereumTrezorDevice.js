@@ -9,6 +9,13 @@ const DEFAULT_PATH = "m/44'/60'/0'/0"
 const DEFAULT_PATH_FACTORY = (index) => `${DEFAULT_PATH}/${index}`
 
 export default class EthereumTrezorDevice extends EventEmitter {
+  constructor ({ xpubkey }) {
+    super()
+    if(xpubkey) {
+      this.xpubkey = xpubkey
+    }
+  }
+
   get name () {
     return 'trezor'
   }
@@ -18,9 +25,10 @@ export default class EthereumTrezorDevice extends EventEmitter {
   }
 
   async getAddress (path) {
-    if (this.isConnected) {
+    if (this.xpubkey) {
       const hdKey = hdkey.fromExtendedKey(this.xpubkey)
-      const wallet = hdKey.derivePath(path).getWallet()
+      const wallet = hdKey.deriveChild(0).getWallet()
+      console.log(`0x${wallet.getAddress().toString('hex')}`)
       return `0x${wallet.getAddress().toString('hex')}`
     }
     return
@@ -44,7 +52,7 @@ export default class EthereumTrezorDevice extends EventEmitter {
     })
   }
 
-  async signTransaction (txData, path) {
+  async signTransaction (txData) {
     // Encode using ethereumjs-tx
     const tx = new EthereumTx({
       ...txData,
@@ -77,7 +85,7 @@ export default class EthereumTrezorDevice extends EventEmitter {
 
     const chainId = txData.chainId
     const response = await TrezorConnect.ethereumSignTransaction({
-      path: path,
+      path: this.path,
       transaction: {
         nonce: txData.nonce.toString(16),
         gasPrice: txData.gasPrice.toString(16),
@@ -103,15 +111,13 @@ export default class EthereumTrezorDevice extends EventEmitter {
 
       // Return the signed raw transaction
       const rawTx = '0x' + tx.serialize().toString('hex')
-      return {
-        rawTransaction: rawTx,
-      }
+      return rawTx
     }
   }
 
-  async signData (data, path) {
+  async signData (data) {
     const response = await TrezorConnect
-      .ethereumSignMessage({ path: path, message: Buffer.from(data).toString('hex') })
+      .ethereumSignMessage({ path: this.path, message: Buffer.from(data).toString('hex') })
     if (response.success) {
       return {
         signature: `0x${response.payload.signature}`,

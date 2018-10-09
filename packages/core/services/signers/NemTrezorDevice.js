@@ -7,25 +7,25 @@ import EventEmitter from 'events'
 import TrezorConnect from 'trezor-connect'
 
 export default class NemTrezorDevice extends EventEmitter {
-  constructor ({ seed, network }) {
+  constructor ({ network }) {
     super()
-    this.seed = seed
     this.network = network
     Object.freeze(this)
   }
 
   async getAddress (path) {
+    console.log(this.network)
     const result = await TrezorConnect.nemGetAddress({
-      path: path,
-      network: this.network,
+      path: "m/44'/43'/0'",//path,
+      //network: this.network,
     })
-
+    console.log(result)
     return result.payload.address
   }
 
-  async signTransaction (data, path) {
+  async signTransaction (data) {
     const result = await TrezorConnect.nemSignTransaction({
-      path: path,
+      path: this.path,
       transaction: data,
     })
 

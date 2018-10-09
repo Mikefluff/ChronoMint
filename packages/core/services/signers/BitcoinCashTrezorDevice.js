@@ -6,27 +6,30 @@
 import EventEmitter from 'events'
 import bitcoin from 'bitcoinjs-lib'
 import TrezorConnect from 'trezor-connect'
+import bippath from 'bip32-path'
 
 export default class BitcoinTrezorDevice extends EventEmitter {
-  constructor ({ xpub, network }) {
+  constructor ({ network }) {
     super()
-    this.xpub = xpub
     this.network = network
     Object.freeze(this)
   }
 
   // this method is a part of base interface
-  getAddress (path) {
-    return  bitcoin.HDNode
-      .fromBase58(this.xpub, this.network)
-      .derivePath(path).getAddress()
+  async getAddress (path) {
+    const result = await TrezorConnect.getAddress({
+                           path: "m/44'/145'/0'/0/0",
+                           coin: "Bcash"
+                         })
+    console.log(result)
+    return result.payload.address
   }
 
-  async signTransaction (unsignedTxHex, path) {
+  async signTransaction (unsignedTxHex) {
     // tx object
     const txb = new bitcoin.TransactionBuilder
       .fromTransaction(bitcoin.Transaction.fromHex(unsignedTxHex), this.network)
-    const localAddress = this.getAddress(path)
+    const localAddress = this.getAddress()
 
     if (!localAddress) {
       return
@@ -69,9 +72,10 @@ export default class BitcoinTrezorDevice extends EventEmitter {
     const result = await TrezorConnect.signTransaction({
       inputs: inputs,
       outputs: outputs,
-      coin: 'Testnet', // @todo Need to do mainnet support?
+      coin: 'Bcash', // @todo Need to do mainnet support?
     })
 
     return result
+
   }
 }

@@ -27,7 +27,7 @@ export default class BitcoinCashLedgerDevice extends EventEmitter {
     const transport = await TransportU2F.create()
     const app = new AppBTC(transport)
     const result = await app.getWalletPublicKey(path)
-
+    console.log(result)
     return result.bitcoinAddress
   }
 

@@ -51,13 +51,10 @@ export default class EthereumLedgerDevice extends EventEmitter {
 
   async getAddress (path) {
     return this._safeExec(async () => {
-      if (this.isConnected) {
         const transport = await TransportU2F.create()
         const app = new AppEth(transport)
         const { address } = await Promise.race([this._getAddressInfo(app, path), rejectOnTimeout(2000)])
         return address
-      }
-      return
     })
   }
 
@@ -115,9 +112,7 @@ export default class EthereumLedgerDevice extends EventEmitter {
         throw new Error(`[SignerLedgerModel] Invalid networkId signature returned. Expected: ${validChainId}, Got: ${signedChainId}`)
       }
 
-      return {
-        rawTransaction: `0x${tx.serialize().toString('hex')}`,
-      }
+      return `0x${tx.serialize().toString('hex')}`
     })
   }
 

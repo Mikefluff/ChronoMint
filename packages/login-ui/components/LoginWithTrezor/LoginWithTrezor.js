@@ -70,7 +70,7 @@ class LoginWithTrezor extends Component {
         }
 
         {
-          deviceList.length && (
+          !!deviceList.length && (
             <div styleName='account'>
               {deviceList.map(this._buildItem)}
             </div>
@@ -82,7 +82,6 @@ class LoginWithTrezor extends Component {
             <Translate value='LoginWithTrezor.enterPath' />
           </button>
           <br />
-
           <Translate value='LoginWithTrezor.or' />
           <br />
 

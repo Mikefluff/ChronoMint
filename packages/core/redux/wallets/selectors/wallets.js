@@ -60,7 +60,7 @@ export const sectionsSelector = createSectionsSelector(
   ) => {
 
     const sectionsObject = {}
-
+    console.log(walletsList)
     walletsList
       .forEach((wallet) => {
         const { address, blockchain } = wallet

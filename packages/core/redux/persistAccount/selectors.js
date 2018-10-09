@@ -16,6 +16,8 @@ import { DUCK_PERSIST_ACCOUNT } from './constants'
 
 import EthereumTrezorDeviceMock from '../../services/signers/EthereumTrezorDeviceMock'
 import EthereumLedgerDeviceMock from '../../services/signers/EthereumLedgerDeviceMock'
+import EthereumTrezorDevice from '../../services/signers/EthereumTrezorDevice'
+import EthereumLedgerDevice from '../../services/signers/EthereumLedgerDevice'
 import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
 
 export const getPersistAccount = (state) => {
@@ -24,19 +26,19 @@ export const getPersistAccount = (state) => {
 
 export const getEthereumSigner = (state) => {
   const account = getPersistAccount(state)
-
+  console.log(account)
   switch (account.selectedWallet.type) {
     case WALLET_TYPE_TREZOR_MOCK: {
       return new EthereumTrezorDeviceMock()
     }
     case WALLET_TYPE_TREZOR: {
-      return new EthereumTrezorDeviceMock()
+      return new EthereumTrezorDevice({xpubkey: account.selectedWallet.encrypted[0].xpubkey})
     }
     case WALLET_TYPE_LEDGER_MOCK: {
       return new EthereumLedgerDeviceMock()
     }
     case WALLET_TYPE_LEDGER: {
-      return new EthereumLedgerDeviceMock()
+      return new EthereumLedgerDevice()
     }
     case WALLET_TYPE_MEMORY: {
       return new EthereumMemoryDevice(account.decryptedWallet.privateKey)

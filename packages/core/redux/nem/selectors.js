@@ -15,7 +15,6 @@ import NemTrezorDevice from '../../services/signers/NemTrezorDevice'
 import NemTrezorDeviceMock from '../../services/signers/NemTrezorDeviceMock'
 import {
   WALLET_TYPE_MEMORY,
-  WALLET_TYPE_METAMASK,
   WALLET_TYPE_TREZOR,
   WALLET_TYPE_TREZOR_MOCK,
 } from '../../models/constants/AccountEntryModel'
@@ -52,9 +51,6 @@ export const getNemSigner = (state) => {
     }
     case WALLET_TYPE_TREZOR: {
       return new NemTrezorDevice({ network })
-    }
-    case WALLET_TYPE_METAMASK: {
-      return new MetamaskPlugin()
     }
   }
 }
