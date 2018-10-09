@@ -20,11 +20,15 @@ class LoginWithLedger extends PureComponent {
   componentWillUnmount () {
   }
 
+  handleDeviceSelect = (item) => () => {
+    this.props.onDeviceSelect(item)
+  }
+
   _buildItem = (item, i) => {
     return (
       <div
         key={i}
-        onClick={() => this.props.onDeviceSelect(item)}
+        onClick={this.handleDeviceSelect(item)}
         styleName='account-item'
       >
         <div styleName='account-item-content'>
