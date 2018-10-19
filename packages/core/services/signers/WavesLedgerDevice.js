@@ -15,10 +15,11 @@ export default class WavesLedgerDevice extends EventEmitter {
 
   // this method is a part of base interface
   async getAddress (path) {
-    console.log('we are here')
-    const transport = await TransportU2F.create()
+    const transport = await TransportU2F.create(3000,15000)
+    await transport.setExchangeTimeout(60000)
+    await transport.setDebugMode(true)
     const app = new AppWaves(transport)
-    const result = await app.getWalletPublicKey(path)
+    const result = await app.getWalletPublicKey("44'/5741564'/0'/0'/1'")
     console.log(result)
     return result.bitcoinAddress
   }

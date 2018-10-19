@@ -84,10 +84,22 @@ export default class Waves {
         address: string,
         statusCode?: string
     }> {
-        const buffer = Waves.splitPath("44'/5741564'/0'/0'/0");
+	const paths = bippath.fromString(path).toPathArray();
+        const buffer2 = Buffer.alloc(paths.length * 4);
+        paths.forEach((element, index) => {
+            buffer2.writeUInt32BE(element, 4 * index);
+        });
         const p1 = verify ? 0x80 : 0x00;
-        const response = await this.transport.send(0x80, 0x04, p1, this.networkCode, buffer);
-	console.log(response)
+	const response2 = await this.transport.send(0x80, 0x06, 0x00, 0x00)
+	console.log(response2.toString('hex'))
+        const req = Buffer.concat([
+        Buffer.from([0x80, 0x04, 0x00, 0x54]),
+        Buffer.from([buffer2.length]),
+        buffer2
+      ])
+	console.log(req.toString('hex'))
+        const response = await this.transport.send(0x80, 0x04, 0x00, 0x54, buffer2);
+	console.log(response.toString('hex'))
         const publicKey = libs.base58.encode(response.slice(0, WAVES_CONFIG.PUBLIC_KEY_LENGTH));
         const address = response
             .slice(WAVES_CONFIG.PUBLIC_KEY_LENGTH, WAVES_CONFIG.PUBLIC_KEY_LENGTH + WAVES_CONFIG.ADDRESS_LENGTH)
@@ -95,7 +107,7 @@ export default class Waves {
         const statusCode = response
             .slice(-WAVES_CONFIG.STATUS_LENGTH)
             .toString("hex");
-        return { publicKey, address, statusCode };
+	    return { publicKey, address, statusCode };
     }
 
     /**
@@ -149,7 +161,9 @@ export default class Waves {
     static splitPath(path) {
         const result = [];
         path.split("/").forEach(element => {
+	    console.log(element)
             let number = parseInt(element, 10);
+	    console.log(number)
             if (isNaN(number)) {
                 return;
             }
@@ -162,7 +176,8 @@ export default class Waves {
         const buffer = new Buffer(result.length * 4);
 
         result.forEach((element, index) => {
-            buffer.writeUInt32BE(element, 4 * index);
+	    console.log(element.toString(16))
+            buffer.writeUInt32LE(element, 4 * index);
         });
 
         return buffer;
