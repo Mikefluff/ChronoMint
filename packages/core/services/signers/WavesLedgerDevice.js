@@ -7,7 +7,10 @@ import EventEmitter from 'events'
 import TransportU2F from '@ledgerhq/hw-transport-u2f'
 import AppWaves from './wavesledger'
 
+export const MOCK_PRIVATE_SEED = 'cfc237b5d387c438cfdf647f686807ade5d6284cc7302d1ba5e4dd7e16b4e91b'
+
 export default class WavesLedgerDevice extends EventEmitter {
+
   constructor ({ network }) {
     super()
     this.network = network
@@ -23,5 +26,4 @@ export default class WavesLedgerDevice extends EventEmitter {
     console.log(result)
     return result.bitcoinAddress
   }
-
 }
