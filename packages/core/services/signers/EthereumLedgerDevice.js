@@ -1,4 +1,8 @@
-import EventEmitter from 'events'
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import EthereumTx from 'ethereumjs-tx'
 import AsyncLock from 'async-lock'
 import { omitBy, isNil } from 'lodash'
@@ -16,9 +20,8 @@ const rejectOnTimeout = (timeout) =>
     setTimeout(() => reject(new Error('Timeout')), timeout)
   })
 
-export default class EthereumLedgerDevice extends EventEmitter {
+export default class EthereumLedgerDevice {
   constructor () {
-    super()
     this.lock = new AsyncLock({ domainReentrant: true })
   }
 

@@ -2,7 +2,7 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-import { Address, Transaction, Unit } from 'dashcore-lib'
+import { Address, Script, Transaction, Unit } from 'dashcore-lib'
 import BigNumber from 'bignumber.js'
 
 import { TransferNoticeModel, TxExecModel } from '../../models'
@@ -14,9 +14,9 @@ import { getSelectedNetwork } from '../persistAccount/selectors'
 import { modalsOpen } from '../modals/actions'
 import { notify } from '../notifier/actions'
 
-import * as BitcoinActions from '../bitcoin-like-blockchain/actions'
-import { getAddressUTXOS } from '../bitcoin-like-blockchain/thunks'
-import * as BitcoinUtils from '../bitcoin-like-blockchain/utils'
+import * as BitcoinActions from '../abstractBitcoin/actions'
+import { getAddressUTXOS } from '../abstractBitcoin/thunks'
+import * as BitcoinUtils from '../abstractBitcoin/utils'
 
 import { getDashSigner } from './selectors'
 import DashMiddlewareService from './DashMiddlewareService'
@@ -52,7 +52,8 @@ export const executeDashTransaction = ({ tx, options }) => async (dispatch, getS
         entry,
         description,
         accept: () => async (dispatch) => {
-          const response = await DashMiddlewareService.requestSendTx(transaction, blockchain, network[blockchain])
+          const response = await DashMiddlewareService.requestSendTx(transaction, blockchain, network[blockchain],
+            options.instantSend)
           dispatch(notify(new TransferNoticeModel({
             amount: token.removeDecimals(tx.value),
             symbol: token.symbol(),
@@ -78,11 +79,15 @@ export const estimateFee = (params) => async (dispatch) => {
 
 async function getUnsignedTransaction (dispatch, from, to, amount, blockchain) {
   const utxosRawData = await dispatch(getAddressUTXOS(from, blockchain)) || []
-  const utxos = utxosRawData.map((utxo) => new Transaction.UnspentOutput(utxo))
 
   if (utxosRawData.length < 1) {
     throw new Error(`Can't find utxos for address: ${from}`)
   }
+
+  const utxos = utxosRawData.map(utxo => {
+    utxo.scriptPubKey = Script.fromAddress(utxo.address)
+    return new Transaction.UnspentOutput(utxo)
+  })
 
   return new Transaction()
     .from(utxos)

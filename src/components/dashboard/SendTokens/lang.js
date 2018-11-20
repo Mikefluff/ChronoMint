@@ -8,6 +8,7 @@ export const prefix = 'SendTokens'
 export default {
   en: {
     fast: 'Fast',
+    instantSend: 'InstantSend',
     slowTransaction: 'Slow transaction',
     balance: 'Balance',
     recipientAddress: 'Recipient address',
@@ -17,6 +18,7 @@ export default {
     transactionFee: 'Transaction fee:',
     basedOnLimit: 'Based on estimated gas limit: ',
     averageFee: '%{multiplier}x of average fee',
+    errorEstimateFee: 'Unable to calculate transaction fee at the moment. Try again later',
     errorFillSatPerBiteField: 'Need to fill SAT/byte field',
     errorCalculationFee: 'Unable to calculate transaction fee at the moment. Try again later',
     errorFillAllFields: 'Need to fill all necessary fields',

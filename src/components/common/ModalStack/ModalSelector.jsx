@@ -32,6 +32,7 @@ import TwoFaConfirmModal from 'components/wallet/TwoFaConfirmModal/TwoFaConfirmM
 import UpdateProfileDialog from 'components/dialogs/UpdateProvideDialog/UpdateProfileDialog'
 import UserActiveDialog from 'components/dialogs/UserActiveDialog/UserActiveDialog'
 import WalletSettingsForm from 'components/wallet/AddWalletWidget/WalletSettingsForm/WalletSettingsForm'
+import BlockchainChoiceModalContainer from 'components/wallet/BlockchainChoiceModal/BlockchainChoiceModalContainer'
 
 export default class ModalSelector extends PureComponent {
   // Keep Map alphabetically sorted
@@ -56,6 +57,7 @@ export default class ModalSelector extends PureComponent {
     'ReceiveTokenModal': ReceiveTokenModal,
     'RevokeDialog': RevokeDialog,
     'SendTokens': SendTokens,
+    'TurnOffBlockchain': BlockchainChoiceModalContainer,
     'TwoFaConfirmModal': TwoFaConfirmModal,
     'UpdateProfileDialog': UpdateProfileDialog,
     'UserActiveDialog': UserActiveDialog,

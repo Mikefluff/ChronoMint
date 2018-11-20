@@ -4,10 +4,20 @@
  */
 
 import { createSelector } from 'reselect'
-import { DUCK_ETHEREUM } from './constants'
 
-export const ethereumSelector = () => (state) =>
-  state.get(DUCK_ETHEREUM)
+import { DUCK_ETHEREUM } from './constants'
+import {
+  WALLET_TYPE_LEDGER, WALLET_TYPE_LEDGER_MOCK,
+  WALLET_TYPE_MEMORY,
+  WALLET_TYPE_TREZOR,
+  WALLET_TYPE_TREZOR_MOCK,
+} from '../../models/constants/AccountEntryModel'
+import { getPersistAccount } from '../persistAccount/selectors'
+import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
+import EthereumLedgerDeviceMock from '../../services/signers/EthereumLedgerDeviceMock'
+import EthereumTrezorDeviceMock from '../../services/signers/EthereumTrezorDeviceMock'
+
+export const ethereumSelector = () => (state) => state.get(DUCK_ETHEREUM)
 
 export const web3Selector = () => createSelector(
   ethereumSelector(),
@@ -18,49 +28,24 @@ export const web3Selector = () => createSelector(
   },
 )
 
-export const ethereumPendingSelector = () => createSelector(
-  ethereumSelector(),
-  (ethereum) => ethereum == null // nil check
-    ? null
-    : ethereum.pending,
-)
+export const getEthereumSigner = (state) => {
+  const account = getPersistAccount(state)
 
-export const ethereumPendingFormatSelector = () => createSelector(
-  ethereumSelector(),
-  (ethereum) => {
-    if (ethereum == null || ethereum.pending == null) {
-      return null
+  switch (account.selectedWallet.type) {
+    case WALLET_TYPE_TREZOR_MOCK: {
+      return new EthereumTrezorDeviceMock()
     }
-
-    return Object.values(ethereum.pending)
-      .reduce((accumulator, txList) => {
-        return accumulator.concat(Object.values(txList)
-          .filter((tx) => tx.isAccepted && !tx.isMined))
-      }, [])
-  },
-)
-
-export const ethereumPendingCountSelector = () => createSelector(
-  ethereumPendingFormatSelector(),
-  (pendingList) => {
-    return pendingList ? pendingList.length : 0
-  },
-)
-
-export const pendingEntrySelector = (address, key) => createSelector(
-  ethereumPendingSelector(),
-  (pending) => {
-    if (address in pending) {
-      const res = pending[address][key] || null
-      if (!res) {
-        // eslint-disable-next-line
-        console.log('res null', address, key, pending, new Error())
-      }
-      return res
+    case WALLET_TYPE_TREZOR: {
+      return new EthereumTrezorDeviceMock()
     }
-
-    // eslint-disable-next-line
-    console.log('res null', address, key, pending, new Error())
-    return null
-  },
-)
+    case WALLET_TYPE_LEDGER_MOCK: {
+      return new EthereumLedgerDeviceMock()
+    }
+    case WALLET_TYPE_LEDGER: {
+      return new EthereumLedgerDeviceMock()
+    }
+    case WALLET_TYPE_MEMORY: {
+      return new EthereumMemoryDevice(account.decryptedWallet.privateKey)
+    }
+  }
+}

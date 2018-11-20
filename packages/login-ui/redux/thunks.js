@@ -19,7 +19,7 @@ import {
   WALLET_TYPE_LEDGER_MOCK,
 } from '@chronobank/core/models/constants/AccountEntryModel'
 import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
-import { getEthereumSigner } from '@chronobank/core/redux/persistAccount/selectors'
+import { getEthereumSigner } from '@chronobank/core/redux/ethereum/selectors'
 import * as NetworkActions from '@chronobank/login/redux/network/actions'
 import localStorage from 'utils/LocalStorage'
 import {
@@ -27,6 +27,7 @@ import {
 } from '@chronobank/login/redux/network/constants'
 import {
   DUCK_PERSIST_ACCOUNT,
+  DEFAULT_ACTIVE_BLOCKCHAINS,
 } from '@chronobank/core/redux/persistAccount/constants'
 import * as NetworkThunks from '@chronobank/login/redux/network/thunks'
 import * as SessionThunks from '@chronobank/core/redux/session/thunks'
@@ -105,8 +106,6 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         const wallet = await dispatch(PersistAccountActions.decryptAccount(accountWallet, password))
 
         await dispatch(PersistAccountActions.accountLoad(wallet))
-        const signer = getEthereumSigner(getState())
-        await dispatch(SessionThunks.getProfileSignature(signer, accountWallet.encrypted[0].path))
 
         dispatch(NetworkActions.selectAccount(accountWallet.address))
 
@@ -127,6 +126,8 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
         const defaultURL = await dispatch(SessionThunks.login(selectedAccount))
 
         dispatch(replace(localStorage.getLastURL() || defaultURL))
+        const signer = getEthereumSigner(getState())
+        await dispatch(SessionThunks.getProfileSignature(signer, accountWallet.encrypted[0].path))
       } catch (e) {
         //eslint-disable-next-line
         console.warn('Memory type error: ', e)
@@ -180,11 +181,12 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
  * TODO: to remove throws
  * TODO: to rework it
  */
-export const onSubmitCreateAccountImportMnemonic = (name, password, mnemonic) => async (dispatch) => {
+export const onSubmitCreateAccountImportMnemonic = (name, password, mnemonic, blockchainList) => async (dispatch) => {
   await dispatch(onSubmitImportAccount({
     name,
     password,
     mnemonic,
+    blockchainList,
   }))
 }
 
@@ -194,11 +196,12 @@ export const onSubmitCreateAccountImportMnemonic = (name, password, mnemonic) =>
  * TODO: to remove throws
  * TODO: to rework it
  */
-export const onSubmitCreateAccountImportPrivateKey = (name, password, privateKey) => async (dispatch) => {
+export const onSubmitCreateAccountImportPrivateKey = (name, password, privateKey, blockchainList) => async (dispatch) => {
   await dispatch(onSubmitImportAccount({
     name,
     password,
     privateKey,
+    blockchainList,
   }))
 }
 
@@ -206,7 +209,7 @@ export const onSubmitCreateAccountImportPrivateKey = (name, password, privateKey
  * Thunk dispatched by
  * LoginWithMnemonic, LoginWithPrivateKey screen.
  */
-export const onSubmitImportAccount = ({ name, password, mnemonic = '', privateKey = '' }) => async (dispatch) => {
+export const onSubmitImportAccount = ({ name, password, mnemonic = '', privateKey = '', blockchainList = DEFAULT_ACTIVE_BLOCKCHAINS }) => async (dispatch) => {
   try {
     const account = await dispatch(PersistAccountActions.createMemoryAccount({
       name,
@@ -215,6 +218,7 @@ export const onSubmitImportAccount = ({ name, password, mnemonic = '', privateKe
       privateKey,
     }))
 
+    account.blockchainList = blockchainList
     dispatch(PersistAccountActions.accountAdd(account))
     dispatch(PersistAccountActions.accountSelect(account))
 
@@ -286,6 +290,7 @@ export const onSubmitCreateHWAccountPageFail = (errors, submitErrors) => {
 export const onCreateWalletFromJSON = (name, walletObject, profile) => (dispatch) => {
   const account = createAccountEntry(name, walletObject, profile)
   dispatch(PersistAccountActions.accountAdd(account))
+  dispatch(PersistAccountActions.accountSelect(account))
 }
 
 /*
@@ -295,8 +300,8 @@ export const onCreateWalletFromJSON = (name, walletObject, profile) => (dispatch
 */
 export const onCreateWalletFromDevice = (name, device, profile, walletType) => (dispatch) => {
   const account = createDeviceAccountEntry(name, device, profile, walletType)
-
   dispatch(PersistAccountActions.accountAdd(account))
+  dispatch(PersistAccountActions.accountSelect(account))
 }
 
 /*

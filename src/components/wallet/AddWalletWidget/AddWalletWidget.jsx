@@ -11,16 +11,18 @@ import { connect } from 'react-redux'
 import { change, formValueSelector } from 'redux-form/immutable'
 import { resetWalletsForm } from 'redux/ui/thunks'
 import { navigateToWallets } from 'redux/ui/navigation'
-import { FORM_ADD_NEW_WALLET } from '@chronobank/core/redux/mainWallet/constants'
+import { FORM_ADD_NEW_WALLET } from '@chronobank/core/redux/wallets/constants'
 import WidgetContainer from 'components/WidgetContainer/WidgetContainer'
 import MultisigEthWalletModel from '@chronobank/core/models/wallet/MultisigEthWalletModel'
 import { FORM_2FA_STEPS, FORM_2FA_WALLET } from '@chronobank/core/redux/multisigWallet/constants'
 import {
-  BLOCKCHAIN_NEM,
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_DASH,
-  BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_ETHEREUM,
+  BLOCKCHAIN_LABOR_HOUR,
+  BLOCKCHAIN_LITECOIN,
+  BLOCKCHAIN_NEM,
+  ETH,
 } from '@chronobank/core/dao/constants'
 import './AddWalletWidget.scss'
 import SelectWalletType from './SelectWalletType/SelectWalletType'
@@ -158,6 +160,7 @@ export default class AddWalletWidget extends PureComponent {
       case 'CW':
         title = `${prefix}.customWallet`
         Component = CustomWalletForm
+        componentProps = { symbol: ETH, blockchain: BLOCKCHAIN_ETHEREUM }
         break
       case '2FA':
         title = `${prefix}.twoFA`
@@ -178,6 +181,7 @@ export default class AddWalletWidget extends PureComponent {
       switch (blockchain) {
         case BLOCKCHAIN_BITCOIN:
         case BLOCKCHAIN_DASH:
+        case BLOCKCHAIN_LABOR_HOUR:
         case BLOCKCHAIN_LITECOIN:
           return (
             <WidgetContainer title={`${prefix}.createWallet`} blockchain={blockchain}>

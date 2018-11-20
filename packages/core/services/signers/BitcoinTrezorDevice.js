@@ -3,14 +3,13 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import EventEmitter from 'events'
 import bitcoin from 'bitcoinjs-lib'
 import TrezorConnect from 'trezor-connect'
 import bippath from 'bip32-path'
 
-export default class BitcoinTrezorDevice extends EventEmitter {
-  constructor ({ network }) {
-    super()
+export default class BitcoinTrezorDevice {
+  constructor ({ xpub, network }) {
+    this.xpub = xpub
     this.network = network
     Object.freeze(this)
   }

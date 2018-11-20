@@ -10,19 +10,22 @@ import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_DASH,
   BLOCKCHAIN_ETHEREUM,
+  BLOCKCHAIN_LABOR_HOUR,
   BLOCKCHAIN_LITECOIN,
   BLOCKCHAIN_NEM,
   BLOCKCHAIN_WAVES,
+  BLOCKCHAIN_EOS,
   BTC,
   DASH,
   ETH,
+  LHT,
   LTC,
   WAVES,
   XEM,
 } from '../../dao/constants'
 
 import { DUCK_TOKENS } from './constants'
-import { BLOCKCHAIN_EOS, EOS } from '../eos/constants'
+import { EOS } from '../eos/constants'
 import { getEOSTokens } from '../eos/selectors/mainSelectors'
 import TokensCollection from '../../models/tokens/TokensCollection'
 
@@ -60,6 +63,8 @@ export const getMainSymbolForBlockchain = (blockchain) => {
       return DASH
     case BLOCKCHAIN_ETHEREUM:
       return ETH
+    case BLOCKCHAIN_LABOR_HOUR:
+      return LHT
     case BLOCKCHAIN_NEM:
       return XEM
     case BLOCKCHAIN_WAVES:

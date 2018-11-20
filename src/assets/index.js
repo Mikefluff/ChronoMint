@@ -3,6 +3,18 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_DASH,
+  BLOCKCHAIN_LITECOIN,
+  BLOCKCHAIN_ETHEREUM,
+  BLOCKCHAIN_WAVES,
+  BLOCKCHAIN_NEM,
+  BLOCKCHAIN_EOS,
+  BLOCKCHAIN_LABOR_HOUR,
+} from '@chronobank/login/network/constants'
+
 /* eslint-disable global-require */
 
 export const TOKEN_ICONS = {
@@ -12,6 +24,7 @@ export const TOKEN_ICONS = {
   DASH: require('./img/dash.svg'),
   LTC: require('./img/icn-litecoin.svg'),
   TIME: require('./img/icn-time.svg'),
+  LHT: require('./img/icn-lht.svg'),
   LHUS: require('./img/icn-lhus.svg'),
   LHEU: require('./img/icn-lheu.svg'),
   LHAU: require('./img/icn-lhau.svg'),
@@ -20,6 +33,18 @@ export const TOKEN_ICONS = {
   WAVES: require('./img/icn-waves.svg'),
   EOS: require('./img/icn-eos.svg'),
   DEFAULT: require('assets/img/asset_stub.svg'),
+}
+
+export const BLOCKCHAIN_ICONS = {
+  [BLOCKCHAIN_ETHEREUM]: require('./img/icn-ethereum.svg'),
+  [BLOCKCHAIN_LABOR_HOUR]: require('./img/icn-lht.svg'),
+  [BLOCKCHAIN_BITCOIN]: require('./img/icn-bitcoin.svg'),
+  [BLOCKCHAIN_BITCOIN_CASH]: require('./img/icn-bitcoin-cash.svg'),
+  [BLOCKCHAIN_DASH]: require('./img/dash.svg'),
+  [BLOCKCHAIN_LITECOIN]: require('./img/icn-litecoin.svg'),
+  [BLOCKCHAIN_WAVES]: require('./img/icn-waves.svg'),
+  [BLOCKCHAIN_NEM]: require('./img/icn-xem.svg'),
+  [BLOCKCHAIN_EOS]: require('./img/icn-eos.svg'),
 }
 
 export const TX_CONFIRMATIONS = {

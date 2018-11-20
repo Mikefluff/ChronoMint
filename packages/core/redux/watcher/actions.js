@@ -4,17 +4,16 @@
  */
 
 import { watchInitMonitor } from '@chronobank/login/redux/monitor/actions'
+import { startMarket } from '@chronobank/market/middleware/thunks'
 import { watchInitTokens, watchPlatformManager } from '../assetsManager/actions'
-import { initMainWallet } from '../mainWallet/actions'
-import { watchInitMarket } from '../market/actions'
 import { watchEventsToHistory } from '../events/actions'
-import { initTokens } from '../tokens/thunks'
 import { initDAOs } from '../daos/actions'
 import { initProviders } from '../providers/thunks'
 import { watchInitPolls } from '../voting/thunks'
 import { initMultisigWalletManager } from '../multisigWallet/actions'
-import { initWallets } from '../wallets/actions'
 import { WATCHER } from './constants'
+import { enableDefaultBlockchains } from '../persistAccount/actions'
+import { initTokenSubscription } from '../wallets/actions'
 
 // for all users on all pages
 export const globalWatcher = () => async (dispatch) => {
@@ -26,13 +25,12 @@ export const watcher = ({ web3 }) => async (dispatch) => {
   await dispatch(initDAOs({ web3 }))
   dispatch(initProviders())
   dispatch(initMultisigWalletManager())
-  dispatch(initTokens())
-  dispatch(initMainWallet())
-  dispatch(initWallets())
+  dispatch(initTokenSubscription())
+  dispatch(enableDefaultBlockchains())
   dispatch(watchPlatformManager())
   dispatch(watchInitTokens())
   dispatch(watchInitMonitor())
-  dispatch(watchInitMarket())
+  dispatch(startMarket())
   dispatch(watchInitPolls())
   dispatch(watchEventsToHistory())
   dispatch({ type: WATCHER })

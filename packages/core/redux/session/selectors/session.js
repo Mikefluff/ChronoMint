@@ -14,6 +14,7 @@ import {
 import { getMainWallets } from '../../wallets/selectors/models'
 import { getGasSliderCollection, getIsCBE } from './models'
 import WalletModel from '../../../models/wallet/WalletModel'
+import { getEosWallets } from '../../eos/selectors/mainSelectors'
 
 export const getGasPriceMultiplier = (blockchain) => createSelector([getGasSliderCollection],
   (gasSliderCollection) => {
@@ -35,16 +36,13 @@ export const getAddressesList = () => createSelector(
 export const getBlockchainAddressesList = () => createSelector(
   [getAddressesList()],
   (addresses) => {
-    const result = []
-    PROFILE_PANEL_TOKENS
-      .forEach((token) => {
-        result.push({
-          ...token,
-          address: addresses[token.blockchain],
-        })
-      })
-    return result
-  },
+    return PROFILE_PANEL_TOKENS
+      .map((token) =>({
+        ...token,
+        address: addresses[token.blockchain],
+      }))
+      .filter(({ blockchain }) => Object.keys(addresses).includes(blockchain))
+  }
 )
 
 export const isCBE = () => createSelector(
@@ -75,7 +73,7 @@ export const getAccountProfileSummary = createSelector(
     getSelectedAccountName,
   ],
   (profile, selectedAccountName) => {
-    if (profile){
+    if (profile) {
       const level1 = profile.level1.submitted
       const level2 = profile.level2.submitted
 
@@ -90,5 +88,25 @@ export const getAccountProfileSummary = createSelector(
     }
 
     return {}
-  }
+  },
+)
+
+export const getAccountAddresses = createSelector(
+  [
+    getMainWallets,
+    getEosWallets,
+  ],
+  (wallets, eosWallets) => {
+    return Object.values({ ...wallets, ...eosWallets })
+      .reduce((accumulator, wallet) => {
+        const blockchain = wallet.blockchain.toLowerCase().replace(/\W/, '-')
+        return [
+          ...accumulator,
+          {
+            type: `${blockchain}-address`,
+            value: wallet.address,
+          },
+        ]
+      }, {})
+  },
 )

@@ -1,7 +1,11 @@
-import Web3 from 'web3'
-import EventEmitter from 'events'
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
 
-export default class MetamaskPlugin extends EventEmitter {
+import Web3 from 'web3'
+
+export default class MetamaskPlugin {
   get name () {
     return 'metamask'
   }

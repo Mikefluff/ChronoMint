@@ -10,6 +10,7 @@
     "@chronobank/core": "*",
     "@chronobank/login": "*",
     "@chronobank/login-ui": "*",
+    "@chronobank/market": "*",
     "archiver": "^2.0.0",
     "autoprefixer": "7.1.0",
     "babel-core": "^6.26.0",

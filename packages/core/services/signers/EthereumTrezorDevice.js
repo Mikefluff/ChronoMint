@@ -1,4 +1,8 @@
-import EventEmitter from 'events'
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import EthereumTx from 'ethereumjs-tx'
 import hdkey from 'ethereumjs-wallet/hdkey'
 import TrezorConnect from 'trezor-connect'
@@ -8,14 +12,7 @@ import Web3Utils from 'web3-utils'
 const DEFAULT_PATH = "m/44'/60'/0'/0"
 const DEFAULT_PATH_FACTORY = (index) => `${DEFAULT_PATH}/${index}`
 
-export default class EthereumTrezorDevice extends EventEmitter {
-  constructor ({ xpubkey }) {
-    super()
-    if(xpubkey) {
-      this.xpubkey = xpubkey
-    }
-  }
-
+export default class EthereumTrezorDevice {
   get name () {
     return 'trezor'
   }

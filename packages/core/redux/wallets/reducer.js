@@ -37,6 +37,15 @@ export default (state = initialState, action) => {
           [action.wallet.id]: action.wallet,
         },
       }
+    case a.WALLETS_UNSET:
+      const list = { ...state.list }
+      delete list[action.wallet.id]
+      return {
+        ...state,
+        list: {
+          ...list,
+        },
+      }
     case a.WALLETS_UPDATE_BALANCE:
       return {
         ...state,
@@ -85,6 +94,16 @@ export default (state = initialState, action) => {
             name: action.name,
           }),
         },
+      }
+    case a.WALLETS_LOGOUT:
+      return {
+        list: Object.entries(state.list)
+          .reduce((accumulator, [key, wallet]) => {
+            if (wallet.isDerived) {
+              accumulator[key] = wallet
+            }
+            return accumulator
+          }, {}),
       }
     default:
       return state

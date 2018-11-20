@@ -12,7 +12,7 @@ import { Field, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Slider } from 'redux-form-material-ui'
-import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/mainWallet/constants'
+import { FEE_RATE_MULTIPLIER } from '@chronobank/core/redux/wallets/constants'
 import PropTypes from 'prop-types'
 import TWO_FA_LOGO_PNG from 'assets/img/2fa/2-fa.png'
 import TokenValue from 'components/common/TokenValue/TokenValue'
@@ -20,14 +20,14 @@ import Preloader from 'components/common/Preloader/Preloader'
 import { estimateGasFor2FAForm } from '@chronobank/core/redux/multisigWallet/actions'
 import { DUCK_ETH_MULTISIG_WALLET, FORM_2FA_STEPS, FORM_2FA_WALLET } from '@chronobank/core/redux/multisigWallet/constants'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/constants'
-import { getMarket } from '@chronobank/core/redux/market/selectors'
+import { selectCurrentCurrency } from '@chronobank/market/redux/selectors'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/constants'
 import { prefix } from './lang'
 import './TwoFaWalletForm.scss'
 
 function mapStateToProps (state) {
 
-  const { selectedCurrency } = getMarket(state)
+  const selectedCurrency = selectCurrentCurrency(state)
   const selector = formValueSelector(FORM_2FA_WALLET)
   const feeMultiplier = selector(state, 'feeMultiplier')
   const step = selector(state, 'step')

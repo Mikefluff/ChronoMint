@@ -3,12 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import EventEmitter from 'events'
 import TrezorConnect from 'trezor-connect'
 
-export default class NemTrezorDevice extends EventEmitter {
-  constructor ({ network }) {
-    super()
+export default class NemTrezorDevice {
+  constructor ({ seed, network }) {
+    this.seed = seed
     this.network = network
     Object.freeze(this)
   }
