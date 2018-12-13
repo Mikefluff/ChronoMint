@@ -18,8 +18,12 @@ import EthereumTrezorDevice from '../../services/signers/EthereumTrezorDevice'
 import EthereumLedgerDevice from '../../services/signers/EthereumLedgerDevice'
 import EthereumMemoryDevice from '../../services/signers/EthereumMemoryDevice'
   DEFAULT_ACTIVE_BLOCKCHAINS,
-  DUCK_PERSIST_ACCOUNT,
+  DUCK_PERSIST_ACCOUNT, TREZOR_ACTIVE_BLOCKCHAINS,
 } from './constants'
+import {
+  WALLET_TYPE_TREZOR,
+  WALLET_TYPE_TREZOR_MOCK,
+} from '../../models/constants/AccountEntryModel'
 
 export const getPersistAccount = (state) => {
   return state.get(DUCK_PERSIST_ACCOUNT)
@@ -49,6 +53,11 @@ export const getBlockchainList = (state) => {
 =======
   return account.selectedWallet.blockchainList || DEFAULT_ACTIVE_BLOCKCHAINS
 >>>>>>> 9c669ec958f53fd239b4d8d22d0b4d4015fdeb0a
+}
+
+export const getSelectedWallet = (state) => {
+  const account = getPersistAccount(state)
+  return account.selectedWallet
 }
 
 export const getNetwork = (state) => {
@@ -99,3 +108,14 @@ export const getAddressCache = createSelector(
     return account.addressCache[selectedWalletKey]
   }
 )
+
+export const getActiveBlockchainListByType = (walletType) => {
+  switch (walletType) {
+    case WALLET_TYPE_TREZOR:
+    case WALLET_TYPE_TREZOR_MOCK:
+      return TREZOR_ACTIVE_BLOCKCHAINS
+
+    default:
+      return DEFAULT_ACTIVE_BLOCKCHAINS
+  }
+}

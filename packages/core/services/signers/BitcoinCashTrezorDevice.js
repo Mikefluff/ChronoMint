@@ -5,30 +5,38 @@
 
 import bitcoin from 'bitcoinjs-lib'
 import TrezorConnect from 'trezor-connect'
-import bippath from 'bip32-path'
+import { BLOCKCHAIN_BITCOIN_CASH, TESTNET } from '../../dao/constants'
+import TrezorError from '../errors/TrezorError'
 
-export default class BitcoinTrezorDevice {
-  constructor ({ xpub, network }) {
-    this.xpub = xpub
+export default class BitcoinCashTrezorDevice {
+  constructor ({ address, network, isTestnet }) {
     this.network = network
-    Object.freeze(this)
+    this.address = address
+    this.coin = isTestnet ? TESTNET : BLOCKCHAIN_BITCOIN_CASH
   }
 
-  // this method is a part of base interface
   async getAddress (path) {
-    const result = await TrezorConnect.getAddress({
-                           path: "m/44'/145'/0'/0/0",
-                           coin: "Bcash"
-                         })
-    console.log(result)
-    return result.payload.address
+    if (!this.address) {
+      const result = await TrezorConnect.getAddress({
+        path: path,
+        coin: this.coin,
+      })
+
+      if (!result.success) {
+        throw new TrezorError(result.code, result.payload.error)
+      }
+
+      this.address = result.payload.address
+    }
+
+    return this.address
   }
 
-  async signTransaction (unsignedTxHex) {
-    // tx object
+  async signTransaction (unsignedTxHex, path) {
+
     const txb = new bitcoin.TransactionBuilder
       .fromTransaction(bitcoin.Transaction.fromHex(unsignedTxHex), this.network)
-    const localAddress = this.getAddress()
+    const localAddress = await this.getAddress(path)
 
     if (!localAddress) {
       return
@@ -71,10 +79,14 @@ export default class BitcoinTrezorDevice {
     const result = await TrezorConnect.signTransaction({
       inputs: inputs,
       outputs: outputs,
-      coin: 'Bcash', // @todo Need to do mainnet support?
+      coin: this.coin,
     })
 
-    return result
+    if (!result.success) {
+      const { code, error } = result.payload
+      throw new TrezorError(code, error)
+    }
 
+    return result.payload.serializedTx
   }
 }
